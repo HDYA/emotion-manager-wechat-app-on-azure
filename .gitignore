@@ -1,0 +1,11 @@
+﻿.vs
+bin
+obj
+
+node_modules
+server/node_modules
+
+*.csproj
+*.csproj.user
+*.sln
+
