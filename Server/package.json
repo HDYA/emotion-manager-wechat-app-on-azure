@@ -1,0 +1,15 @@
+{
+	"version": "0.1.0",
+	"name": "emotion_manager_server",
+  "private": true,
+  "author": {
+    "name": "hdya"
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+    "express": "^4.14.0",
+    "tedious": "^1.14.0",
+    "sql": "^0.73.0"
+  }
+}
