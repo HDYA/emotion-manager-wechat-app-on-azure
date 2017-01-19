@@ -7,9 +7,14 @@ Page({
     userInfo: {}
   },
   //事件处理函数
-  bindViewTap: function() {
+  gotoLogs: function() {
     wx.navigateTo({
       url: '../logs/logs'
+    })
+  },
+  gotoSearch: function() {
+    wx.navigateTo({
+      url: '../search/search'
     })
   },
   onLoad: function () {

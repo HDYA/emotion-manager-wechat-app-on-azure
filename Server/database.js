@@ -16,9 +16,12 @@ var connection = new Connection(config);
 
 connection.on('connect', function (err) {
     // If no error, then good to proceed.  
-    console.log("Database Connected");
-    executeStatement();
+    console.log("Database Connected", err);
 });
+
+connection.on('error', function (err) {
+    console.log(err);
+})
 
 var sql = require('sql');
 
@@ -34,43 +37,47 @@ var image_tag = sql.define({
     columns: ['id', 'image_hash', 'tag']
 });
 
-function getQueryForKeyword(keyword) {
-    var query = image
+exports.findImages = function (keyword, page, success, error) {
+    var image_keyword_query = image
         .select(image.star())
         .from(image.join(image_tag).on(image.hash.equals(image_tag.image_hash)))
         .where(
-            image.description.like('%' + keyword + '%')
+            image.description.like('%')
         )
         .or(
-            image_tag.tag.like('%' + keyword + '%')
+            image_tag.tag.like('%')
         )
+        .limit(configuration.database.page_size)
+        .offset(page * configuration.database.page_size)
+        .order(image.hash)
         .toQuery();
-    return query.text;
-}
 
-function executeStatement(keyword) {
-    request = new Request(getQueryForKeyword(keyword), function (err) {
+    request = new Request(image_keyword_query.text, function (err) {
         if (err) {
             console.log(err);
+            error(500, err.message);
         }
     });
+
+    console.log(image_keyword_query);
+
+    request.addParameter('1', TYPES.VarChar, keyword);
+    request.addParameter('2', TYPES.VarChar, keyword);
+
     var result = "";
+    var found = [];
     request.on('row', function (columns) {
-        columns.forEach(function (column) {
-            if (column.value === null) {
-                console.log('NULL');
-            } else {
-                result += column.value + " ";
-            }
-        });
-        console.log(result);
+        var current = {};
+        console.log(columns);
+        found.push(columns);
         result = "";
     });
 
     request.on('done', function (rowCount, more) {
         console.log(rowCount + ' rows returned');
+
+        success(found);
     });
+
     connection.execSql(request);
 }
-
-exports.getQueryForKeyword = getQueryForKeyword;

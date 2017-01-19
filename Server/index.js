@@ -13,8 +13,12 @@ server.get('/v1/test/:message', function (req, res) {
     res.send(req.params.message);
 });
 
-server.get('/v1/emotion/:keyword', function (req, res) {
-    res.send(search.getImages(req.params.keyword));
+server.get('/v1/emotion/:keyword/:page', function (req, res) {
+    search.getImages(req.params.keyword, req.params.page, function (data) {
+        res.send(data);
+    }, function (error_code, error) {
+        res.status(error_code).send(error.message);
+    })
 });
 
 server.listen(configuration.server.port);

@@ -8,6 +8,10 @@
         server: 'yourserver.database.windows.net',
         database: 'yourdatabase',
         username: 'yourusername',
-        password: 'yourpassword'
+        password: 'yourpassword',
+        page_size: 20,
+    },
+    azure: {
+
     }
 }
